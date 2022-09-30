@@ -8,6 +8,8 @@ from MetalInput import MetalInput
 
 today = str(datetime.today())
 
+#shruti was here
+#aneri was here
 #DATABASE Connection 
 mydb = sql.connect(host="localhost",
 user= "root",
