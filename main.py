@@ -12,7 +12,7 @@ today = str(datetime.today())
 mydb = sql.connect(host="localhost",
 user= "root",
 password ="admin",
-database="trial")
+database="zenithsales")
 mycursor =mydb.cursor()
 
 
@@ -47,25 +47,24 @@ logo.pack(padx=10,pady=10,side=LEFT,fill = BOTH, expand = True)
     
 def OrderStatus():
     DisplayLabel.config(text="Order Status")
-    mycursor.execute("select * from trail;")
+    mycursor.execute("select * from orderStatus;")
     orders =mycursor.fetchall()
 
     print_records=''
     for order in orders:
-        for i in range (2):
+        for i in range (6):
             print_records +=str(order[i]) + "   "
         print_records += "\n"
     query_label.config(text=print_records)
         
 def Casting():
     DisplayLabel.config(text="At Casting Stage")
-    mycursor.execute("select * from trail2;")
+    mycursor.execute("select * from metalInput;")
     orders =mycursor.fetchall()
-    count = mycursor.execute("select * from trail2")
 
     print_records=''
     for order in orders:
-        for i in range (2 ):
+        for i in range (9):
             print_records +=str(order[i]) + "   "
         print_records += "\n"
     query_label.config(text=print_records)
