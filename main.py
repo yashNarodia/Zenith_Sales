@@ -67,7 +67,7 @@ def Casting():
     print_records=''
     for order in orders:
         for i in range (9):
-            print_records +=str(order[i]) + "   "
+            print_records +=str(order[i]) + "    "
         print_records += "\n"
     query_label.config(text=print_records)
 
