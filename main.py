@@ -8,8 +8,6 @@ from MetalInput import MetalInput
 
 today = str(datetime.today())
 
-#shruti was here
-#aneri was here
 #DATABASE Connection 
 mydb = sql.connect(host="localhost",
 user= "root",
@@ -61,12 +59,12 @@ def OrderStatus():
         
 def Casting():
     DisplayLabel.config(text="At Casting Stage")
-    mycursor.execute("select * from metalInput;")
+    mycursor.execute("select * from metalInput where casting = 1 AND turning = 0 AND finishing = 0 AND stock = 0;")
     orders =mycursor.fetchall()
 
     print_records=''
     for order in orders:
-        for i in range (9):
+        for i in range (5):
             print_records +=str(order[i]) + "    "
         print_records += "\n"
     query_label.config(text=print_records)
@@ -74,14 +72,40 @@ def Casting():
     return
 def Turning():
     DisplayLabel.config(text="At Turning Stage")
-    return
+    mycursor.execute("select * from metalInput where turning = 1 AND finishing = 0 AND stock = 0;")
+    orders =mycursor.fetchall()
+
+    print_records=''
+    for order in orders:
+        for i in range (5):
+            print_records +=str(order[i]) + "    "
+        print_records += "\n"
+    query_label.config(text=print_records)
+
 def Finishing():
     DisplayLabel.config(text="At Finishing Stage")
+    mycursor.execute("select * from metalInput where finishing = 1 AND stock = 0;")
+    orders =mycursor.fetchall()
+
+    print_records=''
+    for order in orders:
+        for i in range (5):
+            print_records +=str(order[i]) + "    "
+        print_records += "\n"
+    query_label.config(text=print_records)
     
 def Stock():
     DisplayLabel.config(text="Stocks")
-    return
+    mycursor.execute("select * from metalInput where stock = 1;")
+    orders =mycursor.fetchall()
 
+    print_records=''
+    for order in orders:
+        for i in range (5):
+            print_records +=str(order[i]) + "    "
+        print_records += "\n"
+    query_label.config(text=print_records)
+    
 #--------------------------------------------MAIN BUTTON----------------------------------------------------------------------
 NewOrder=Button(Main_buttons,text="New Order",width=12,relief=RAISED,font=("Segoe UI",'18',"bold"),command=NewOrder)
 NewOrder.pack(padx=10,pady=10,side=LEFT,fill = BOTH, expand = True)
