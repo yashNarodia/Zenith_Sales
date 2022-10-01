@@ -5,6 +5,14 @@ from tkcalendar import Calendar
 import mysql.connector as sql
 today = str(datetime.today())
 
+
+mydb = sql.connect(host="localhost",
+user= "root",
+password ="admin",
+database="zenithsales")
+
+cursor =mydb.cursor()
+
 def MetalInput():
     neworder =Tk()
     neworder.title("New Metal input")
@@ -29,6 +37,18 @@ def MetalInput():
         cal.pack(pady = 20)
         select= Button(calenderwindow, text = "Get Date", command = grad_date).pack(pady = 20)
 
+    def submit():
+        query=("INSERT into metalInput (Model,Finish,Size,Quantity,dateOfOrder) values (%s,%s,%s,%s,%s);")
+        value=(model.get(),finish.get(),size.get(),quantity.get(),dateoforder.get())
+        cursor.execute(query,value)
+        mydb.commit()
+
+        model.delete(0,END)
+        finish.delete(0,END)
+        size.delete(0,END)
+        quantity.delete(0,END)
+        dateoforder.delete(0,END)
+
     #------------------------------------------------Metal Input Label --------------------------------------------------------
 
     ModelLabel= Label(frame, text ="Model",font=("Segoe UI","14"))
@@ -41,20 +61,15 @@ def MetalInput():
     quantityLabel.grid(row=4,column=0,padx=10,pady=5)
     dateLabel= Label(frame, text ="Date of Order",font=("Segoe UI","14"))
     dateLabel.grid(row=5,column=0,padx=10,pady=5)
-    
 
-    #------------------------------------------------------Vars---------------------------------------------------------
-    model=StringVar()
-    finish =StringVar()
-    size = StringVar()
     #--------------------------------------------Metal Input ComboBox--------------------------------------------------------
-    model = ttk.Combobox(frame,width=20,font=("Segoe UI","14"),textvariable=model)
+    model = ttk.Combobox(frame,width=20,font=("Segoe UI","14"))
     model.grid(row=1,column=1,padx=10,pady=5)
-    finish = ttk.Combobox(frame,width=20,font=("Segoe UI","14"),textvariable=finish)
+    finish = ttk.Combobox(frame,width=20,font=("Segoe UI","14"))
     finish.grid(row=2,column=1,padx=10,pady=5)
-    size = ttk.Combobox(frame,width=20,font=("Segoe UI","14"),textvariable=size)
+    size = ttk.Combobox(frame,width=20,font=("Segoe UI","14"))
     size.grid(row=3,column=1,padx=10,pady=5)
-    quantity = Text(frame,height=1,width=22,font=("Segoe UI","14"))
+    quantity = Entry(frame,width=22,font=("Segoe UI","14"))
     quantity.grid(row=4,column=1,padx=10,pady=5)
     dateoforder =Entry(frame,width=22,font=("Segoe UI","14"))
     dateoforder.insert(0, today[:11])
@@ -63,7 +78,7 @@ def MetalInput():
     cal_btn = Button(frame,text = "OPEN CALENDER",command = calender,font =('arial',8,'bold'),justify = LEFT)
     cal_btn.grid(row =6 ,column =1 ,pady =(0,20),sticky = E)
 
-    Submit=Button(neworder,text="Submit",width=12,relief=RAISED,font=("Segoe UI",'18',"bold"),command="")
+    Submit=Button(neworder,text="Submit",width=12,relief=RAISED,font=("Segoe UI",'18',"bold"),command=submit)
     Submit.pack(padx=10,pady=10,side=TOP)
 
     neworder.mainloop()

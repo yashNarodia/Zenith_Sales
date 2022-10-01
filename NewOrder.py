@@ -1,10 +1,21 @@
+from functools import partial
+from operator import ge
+from optparse import Values
 from tkinter import *
 from tkinter import ttk
 from datetime import date, datetime
+from traceback import print_tb
 from tkcalendar import Calendar
 import mysql.connector as sql
 
 today = str(datetime.today())
+
+mydb = sql.connect(host="localhost",
+user= "root",
+password ="admin",
+database="zenithsales")
+
+cursor =mydb.cursor()
 
 def NewOrder():
     neworder =Tk()
@@ -30,7 +41,18 @@ def NewOrder():
         cal.pack(pady = 20)
         select= Button(calenderwindow, text = "Get Date", command = grad_date).pack(pady = 20)
 
+    def submit():
+        query=("INSERT into orderStatus (partyName,Model,Finish,size,Quantity,dateOfOrder) values (%s,%s,%s,%s,%s,%s);")
+        value=(PartyName.get(),model.get(),finish.get(),size.get(),quantity.get(),dateoforder.get())
+        cursor.execute(query,value)
+        mydb.commit()
 
+        PartyName.delete(0,END)
+        model.delete(0,END)
+        finish.delete(0,END)
+        size.delete(0,END)
+        quantity.delete(0,END)
+        dateoforder.delete(0,END)
     #------------------------------------------------New Order Labels----------------------------------------------------------
     nameLabel= Label(frame, text ="party Name",font=("Segoe UI","14"))
     nameLabel.grid(row=0,column=0,padx=10,pady=5)
@@ -45,25 +67,18 @@ def NewOrder():
     dateLabel= Label(frame, text ="Date of Order",font=("Segoe UI","14"))
     dateLabel.grid(row=5,column=0,padx=10,pady=5)
 
-    #---------------------------------------------------VARS---------------------------------------------------------------
-    partyname=StringVar()
-    model=StringVar()
-    finish =StringVar()
-    size = StringVar()
-    quantity =IntVar()
-    daate = StringVar()
     #--------------------------------------------New Order ComboBox--------------------------------------------------------
-    PartyName = ttk.Combobox(frame,width=20,font=("Segoe UI","14"),textvariable=partyname)
+    PartyName = ttk.Combobox(frame,width=20,font=("Segoe UI","14"))
     PartyName.grid(row=0,column=1,padx=10,pady=5)
-    model = ttk.Combobox(frame,width=20,font=("Segoe UI","14"),textvariable=model)
+    model = ttk.Combobox(frame,width=20,font=("Segoe UI","14"))
     model.grid(row=1,column=1,padx=10,pady=5)
-    finish = ttk.Combobox(frame,width=20,font=("Segoe UI","14"),textvariable=finish)
+    finish = ttk.Combobox(frame,width=20,font=("Segoe UI","14"))
     finish.grid(row=2,column=1,padx=10,pady=5)
-    size = ttk.Combobox(frame,width=20,font=("Segoe UI","14"),textvariable=size)
+    size = ttk.Combobox(frame,width=20,font=("Segoe UI","14"))
     size.grid(row=3,column=1,padx=10,pady=5)
-    quantity = Text(frame,height=1,width=22,font=("Segoe UI","14"))#,textvariable=quantity
+    quantity=Entry(frame,width=22,font=("Segoe UI","14"))
     quantity.grid(row=4,column=1,padx=10,pady=5)
-    dateoforder =Entry(frame,width=22,font=("Segoe UI","14"),textvariable=daate)
+    dateoforder =Entry(frame,width=22,font=("Segoe UI","14"))
     dateoforder.insert(0, today[:11])
     dateoforder.grid(row=5,column=1,padx=10,pady=5)
 
@@ -71,7 +86,9 @@ def NewOrder():
     cal_btn = Button(frame,text = "OPEN CALENDER",command = calender,font =('arial',8,'bold'),justify = LEFT)
     cal_btn.grid(row =6 ,column =1 ,pady =(0,20),sticky = E)
 
-    Submit=Button(neworder,text="Submit",width=12,relief=RAISED,font=("Segoe UI",'18',"bold"),command="")
+    Submit=Button(neworder,text="Submit",width=12,relief=RAISED,font=("Segoe UI",'18',"bold"),command=submit)
     Submit.pack(padx=10,pady=10,side=TOP)
+
+    
 
     neworder.mainloop()
