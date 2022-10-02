@@ -129,7 +129,4 @@ Stock=Button(Main_buttons,text="Stock",width=12,relief=RAISED,font=("Segoe UI",'
 Stock.pack(padx=10,pady=10,side=LEFT,fill = BOTH, expand = True)
 
 
-
-
-
 root.mainloop()

@@ -53,6 +53,77 @@ def NewOrder():
         size.delete(0,END)
         quantity.delete(0,END)
         dateoforder.delete(0,END)
+
+    def searchParty(event):
+        value =event.widget.get()
+        if value=='':
+            PartyName['values'] = partynames
+
+        else:
+            data=[]
+            for item in partynames:
+                if value.lower() in item.lower():
+                    data.append(item)
+            PartyName['values']=data
+
+    def searchModel(event):
+        value =event.widget.get()
+        if value=='':
+            model['values'] = models
+
+        else:
+            data=[]
+            for item in models:
+                if value.lower() in item.lower():
+                    data.append(item)
+            model['values']=data
+    
+    def searchSize(event):
+        value =event.widget.get()
+        if value=='':
+            size['values'] = sizes
+
+        else:
+            data=[]
+            for item in sizes:
+                if value.lower() in item.lower():
+                    data.append(item)
+            size['values']=data
+    
+    def searchFinish(event):
+        value =event.widget.get()
+        if value=='':
+            finish['values'] = finishes
+
+        else:
+            data=[]
+            for item in finishes:
+                if value.lower() in item.lower():
+                    data.append(item)
+            finish['values']=data
+
+    partynames=[]
+    models =[]
+    finishes=[]
+    sizes=[]
+    
+    cursor.execute("select distinct partyname from orderStatus  ;" )
+    dataset=cursor.fetchall()
+    for data in dataset:
+        partynames.append(data[0])
+    cursor.execute("select distinct model from orderStatus  ;" )
+    dataset=cursor.fetchall()
+    for data in dataset:
+        models.append(data[0])
+    cursor.execute("select distinct finish from orderStatus  ;" )
+    dataset=cursor.fetchall()
+    for data in dataset:
+        finishes.append(data[0])
+    cursor.execute("select distinct size from orderStatus  ;" )
+    dataset=cursor.fetchall()
+    for data in dataset:    
+        sizes.append(data[0])
+
     #------------------------------------------------New Order Labels----------------------------------------------------------
     nameLabel= Label(frame, text ="party Name",font=("Segoe UI","14"))
     nameLabel.grid(row=0,column=0,padx=10,pady=5)
@@ -68,14 +139,18 @@ def NewOrder():
     dateLabel.grid(row=5,column=0,padx=10,pady=5)
 
     #--------------------------------------------New Order ComboBox--------------------------------------------------------
-    PartyName = ttk.Combobox(frame,width=20,font=("Segoe UI","14"))
+    PartyName = ttk.Combobox(frame,width=20,font=("Segoe UI","14"),values=partynames)
     PartyName.grid(row=0,column=1,padx=10,pady=5)
-    model = ttk.Combobox(frame,width=20,font=("Segoe UI","14"))
+    PartyName.bind('<KeyRelease>',searchParty)
+    model = ttk.Combobox(frame,width=20,font=("Segoe UI","14"),values=models)
     model.grid(row=1,column=1,padx=10,pady=5)
-    finish = ttk.Combobox(frame,width=20,font=("Segoe UI","14"))
+    model.bind('<KeyRelease>',searchModel)
+    finish = ttk.Combobox(frame,width=20,font=("Segoe UI","14"),values=finishes)
     finish.grid(row=2,column=1,padx=10,pady=5)
-    size = ttk.Combobox(frame,width=20,font=("Segoe UI","14"))
+    model.bind('<KeyRelease>',searchFinish)
+    size = ttk.Combobox(frame,width=20,font=("Segoe UI","14"),values=sizes)
     size.grid(row=3,column=1,padx=10,pady=5)
+    model.bind('<KeyRelease>',searchSize)
     quantity=Entry(frame,width=22,font=("Segoe UI","14"))
     quantity.grid(row=4,column=1,padx=10,pady=5)
     dateoforder =Entry(frame,width=22,font=("Segoe UI","14"))
