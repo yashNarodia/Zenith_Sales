@@ -39,7 +39,7 @@ def MetalInput():
         select= Button(calenderwindow, text = "Get Date", command = grad_date).pack(pady = 20)
 
     def submit():
-        query=("INSERT into metalInput (Model,Finish,Size,Quantity,dateOfOrder) values (%s,%s,%s,%s,%s);")
+        query=("INSERT into metalInput (Model,Finish,Size,Quantity,dateOfOrder,casting) values (%s,%s,%s,%s,%s,1);")
         value=(model.get(),finish.get(),size.get(),quantity.get(),dateoforder.get())
         cursor.execute(query,value)
         mydb.commit()
