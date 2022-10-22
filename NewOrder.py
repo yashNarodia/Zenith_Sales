@@ -1,6 +1,3 @@
-from functools import partial
-from operator import ge
-from optparse import Values
 from tkinter import *
 from tkinter import ttk
 from datetime import date, datetime
@@ -48,7 +45,7 @@ def NewOrder():
         mydb.commit()
 
         PartyName.delete(0,END)
-        model.delete(0,END)
+        model.delete(0,END) 
         finish.delete(0,END)
         size.delete(0,END)
         quantity.delete(0,END)
