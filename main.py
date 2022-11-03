@@ -182,6 +182,8 @@ def OrderStatus():
         stockitem.grid(row=1,column=1,padx=20,pady=10)
         Complete=Button(comporder,text="Complete Order",font=("Segoe UI","14"),command=close)
         Complete.grid(row=2,column=0,columnspan=2,padx=(150,20),pady=10)
+        
+        # mycursor.execute(select )
 
     completebtn = Button(updation_buttons,text="Complete Order",width=20,font=("Segoe UI","14"),command=completeOrder)
     completebtn.grid(row=3, columnspan= 2,column=2 ,padx=10,pady=10 )  
