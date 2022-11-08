@@ -101,7 +101,7 @@ def OrderStatus():
     mycursor.execute("select * from orderStatus;")
     orders =mycursor.fetchall()
     mydb.commit()
-    print(orders)
+    # print(orders)
     for i in mytree.get_children():
         mytree.delete(i)
 
@@ -158,33 +158,67 @@ def OrderStatus():
         datee = datetime.strptime(dateof,"%d-%m-%Y")
         datee.strftime("%Y-%m-%d")
 
-        query="UPDATE orderstatus set partyname=%s model=%s,finish=%s, size=%s, quantity=%s, dateoforder=%s where orderid = %s "
+        query="UPDATE orderstatus set partyname=%s, model=%s,finish=%s, size=%s, quantity=%s, dateoforder=%s where orderid = %s "
         queryval=(PartyName.get(),model.get(),finish.get(),size.get(),quantity.get(),datee,values[0])
         mycursor.execute(query,queryval)
-
+        mydb.commit()
     Updatebtn = Button(updation_buttons,text="Update",width=20,font=("Segoe UI","14"),command=updatequery)
     Updatebtn.grid(row=3, columnspan= 2,column=0 ,padx=10,pady=10 )  
 
     def completeOrder():
-        def close():
-            comporder.destroy()
         comporder =Tk()
         comporder.title("Complete Order")
         comporder.geometry("500x400")
+        selected =mytree.focus()
+        values=mytree.item(selected,'values')
+
+        query="Select quantity from orderstatus where OrderID = %s"
+        queryval=tuple(values[0])
+        mycursor.execute(query,queryval)
+        orderquanitity = mycursor.fetchone()
+        # print(orderquanitity[0])
+
+        query="Select metalID, quantity from metalinput where model=%s AND finish=%s AND size=%s AND stock=1;"
+        queryval=(model.get(),finish.get(),size.get())
+        mycursor.execute(query,queryval)
+        stockquantity =mycursor.fetchone()
 
         reqLabel=Label(comporder,text="Required",font=("Segoe UI","14"))
         reqLabel.grid(row=0, column=0,padx=(150,20),pady=10)
         stockLabel=Label(comporder,text="In Sock",font=("Segoe UI","14"))
         stockLabel.grid(row=0, column=1,padx=20,pady=10)
-        reqitem = Label(comporder,text="100",font=("Segoe UI","14"))
+        reqitem = Label(comporder,text=orderquanitity[0],font=("Segoe UI","14"))
         reqitem.grid(row=1, column=0,padx=(150,20),pady=10)
-        stockitem=Label(comporder,text="100",font=("Segoe UI","14"))
+        stockitem=Label(comporder,text="",font=("Segoe UI","14"))
         stockitem.grid(row=1,column=1,padx=20,pady=10)
-        Complete=Button(comporder,text="Complete Order",font=("Segoe UI","14"),command=close)
-        Complete.grid(row=2,column=0,columnspan=2,padx=(150,20),pady=10)
-        
-        # mycursor.execute(select )
+        notelabel= Label (comporder,text="",font=("Segoe UI","14"),fg='#FF0000')
+        notelabel.grid (row=2,column=0,columnspan=2,padx=20,pady=10)
+        Complete=Button(comporder,text="Complete Order",font=("Segoe UI","14"))
+        Complete.grid(row=3,column=0,columnspan=2,padx=(150,20),pady=10)
 
+        if stockquantity is None:
+            notelabel.config(text="you dont have stock for the specific order")
+            Complete.config(state="disabled")
+        
+        elif orderquanitity[0] > stockquantity[1]:
+            notelabel.config(text="You cant fullfil the order as dont have enough stock")
+            Complete.config(state="disabled")
+            stockitem.config(text=stockquantity[1])
+        
+        else:
+            stockitem.config(text=stockquantity[1])
+            updatedvalue= stockquantity[1]-orderquanitity[0]            
+        def close():
+            query="update orderstatus set status=1 where OrderID = %s"
+            queryval=tuple(values[0])
+            mycursor.execute(query,queryval)
+            query="update metalinput set quantity = %s where MetalID = %s"
+            queryval=(updatedvalue,stockquantity[0])
+            mycursor.execute(query,queryval)
+            comporder.destroy()
+        
+        Complete.config(command=close)
+        
     completebtn = Button(updation_buttons,text="Complete Order",width=20,font=("Segoe UI","14"),command=completeOrder)
     completebtn.grid(row=3, columnspan= 2,column=2 ,padx=10,pady=10 )  
 
@@ -219,7 +253,7 @@ def Casting():
     
     mycursor.execute("select metalID, model, finish, size, quantity, dateoforder from metalInput where casting = 1 AND turning = 0 AND finishing = 0 AND stock = 0;")
     orders =mycursor.fetchall()
-    print(orders)
+    # print(orders)
     
     for i in mytree.get_children():
         mytree.delete(i)
@@ -295,6 +329,7 @@ def Casting():
         query="UPDATE metalInput set model=%s,finish=%s, size=%s, quantity=%s, dateoforder=%s,turning=%s where metalid = %s "
         queryval=(model.get(),finish.get(),size.get(),quantity.get(),datee,castingbool.get(),values[0])
         mycursor.execute(query,queryval)
+        mydb.commit()
 
         model.delete(0,END)
         finish.delete(0,END)
@@ -401,10 +436,11 @@ def Turning():
         dateof =dateoforder.get()
         datee = datetime.strptime(dateof,"%d-%m-%Y")
         datee.strftime("%Y-%m-%d")
-
+        
         query="UPDATE metalInput set model=%s,finish=%s, size=%s, quantity=%s, dateoforder=%s,finishing=%s where metalid = %s "
         queryval=(model.get(),finish.get(),size.get(),quantity.get(),datee,turningbool.get(),values[0])
         mycursor.execute(query,queryval)
+        mydb.commit()
 
         model.delete(0,END)
         finish.delete(0,END)
@@ -518,6 +554,7 @@ def Finishing():
         query="UPDATE metalInput set model=%s,finish=%s, size=%s, quantity=%s, dateoforder=%s,stock=%s where metalid = %s "
         queryval=(model.get(),finish.get(),size.get(),quantity.get(),datee,finishingbool.get(),values[0])
         mycursor.execute(query,queryval)
+        mydb.commit()
 
         model.delete(0,END)
         finish.delete(0,END)
